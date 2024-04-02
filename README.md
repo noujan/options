@@ -1,2 +1,2 @@
-# options
-Option analysis to find and determine if a stock is good for options.
+# Options
+The ultimate goal of this project is to find an option that is good to sell. First thing first, we work on finding an algorithm to detect or grade stock options. knowing what option is good or bad to sell is going to be the core of this project. There is no right or wrong here of course. Second phase will be finding stocks.
