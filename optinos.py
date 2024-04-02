@@ -1,5 +1,6 @@
 import yfinance as yf
 from datetime import datetime
+import pandas as pd
 
 class Stock:
     def __init__(self, symbol):
@@ -17,6 +18,41 @@ class Stock:
         except IndexError:
             print("Error fetching current price.")
             self.current_price = None
+
+    def get_historical_volatility(self, period='1y'):
+        """Calculate historical volatility (standard deviation of daily return) for the specified period."""
+        hist = self.ticker.history(period=period)
+        daily_returns = hist['Close'].pct_change()
+        hv = daily_returns.std() * (252**0.5) ## Annualize the standard deviation
+        return hv
+
+    def evaluate_options(self):
+        """Evaluate options baed on comparison of IV and HV."""
+        hv = self.get_historical_volatility()
+        exp_dates = self.ticker.options
+
+        evaluations = []
+
+        for data in exp_dates:
+            option_chain = self.ticker.option_chain(data)
+            calls = option_chain.calls
+            puts = option_chain.puts
+
+            # Concatenate calls and puts for simplicity
+            options = pd.concat([calls, puts])
+
+            # Filter options to include only neccessary data
+            options = options[['strike', 'lastPrice', 'impliedVolatility']]
+
+            # Grade options based on IV and HV
+            options['HV'] = hv
+            options['Evaluation'] = options.apply(
+                lambda x: 'Overvalued' if x['impliedVolatility'] > hv else 'Undervalues', axis=1
+            )
+
+            evaluations.append(options)
+        
+        return evaluations
 
     def analyze_closest_expiry_options(self):
         """ Analyze closest options for covered calls and cash-secured-puts."""
@@ -49,4 +85,8 @@ class Stock:
 
 # Example usage
 aapl_stock = Stock("AAPL")
-aapl_stock.analyze_closest_expiry_options()
+# aapl_stock.analyze_closest_expiry_options()
+option_evaluations = aapl_stock.evaluate_options()
+
+# Print evaluations for the first time expiration date as an example
+print(option_evaluations[0])
