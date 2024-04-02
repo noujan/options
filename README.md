@@ -3,4 +3,5 @@ The ultimate goal of this project is to find an option that is good to sell. Fir
 in Phase one we focus on one week options. Looking into short term options.
 
 ## TODO List
-- [ ] Deploy some algorithms to determine evaluate options and grade them.
+- [x] Deploy some algorithms to determine evaluate options and grade them.
+- [ ] What are greeks, include them in the analysis and evaluation.
