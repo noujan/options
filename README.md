@@ -4,4 +4,3 @@ in Phase one we focus on one week options. Looking into short term options.
 
 ## TODO List
 - [ ] Deploy some algorithms to determine evaluate options and grade them.
-- [ ] 
